@@ -51,10 +51,46 @@ router.post('/', async (req, res) => {
     // circuitbreaker
     if(users>1000){
         res.status(400);
-        console.log("okayy");
+        console.log("User Waitlisted");
         res.json({ response: "You are currently waitlisted. We are working on scaling up our systems." });
+        
         // To DO: Add the email to a waitlist table, need to create new table
         // Table schema: name, email, phone, datetime
+
+        const { email, phone, name } = req.body;
+        const currentTime = new Date(); // Create a Date object to capture the current time
+
+        // Create a new object with the captured values and the current time
+        const waitlistUser = {
+        email,
+        phone,
+        name,
+        currentTime: currentTime.toISOString() // Convert the time to ISO format (or another format you prefer)
+        };
+
+        // check if phoneHash is not null
+        if(waitlistUser.phone==null || waitlistUser.email ==null || waitlistUser.name == null){
+            res.status(400);
+            res.json({ response: "Incomplete Details" });
+            return;
+        }
+        // check if phone number is valid or not:
+        const phoneNumberPattern = /^\+1\d{10}$/;
+        if(phoneNumberPattern.test(waitlistUser.phone)==false){
+            res.status(400);
+            res.json({ response: "Not a valid phone number" });
+            return;
+        }
+
+        const addDB = await addWaitlistedUser(waitlistUser.name,waitlistUser.phone, waitlistUser.email, waitlistUser.currentTime);
+        if(addDB==false){
+            res.status(400);
+            res.json({ response: "Internal error" });
+            return;
+        }
+        // send response
+        res.status(200);
+        res.json({ response: "Success"});
         return;
     }
     // get phone number from the request
@@ -227,5 +263,21 @@ function userCount(){
         );
     });
 }
+
+function addWaitlistedUser(name,phone, email, datetime) {
+    return new Promise((resolve, reject) => {
+        connection.query(
+        'INSERT INTO `WaitlistedUsers` (name,phone, email, datetime) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE dateTime=\''+datetime+'\', email=\''+email+'\', name=\''+name+'\'',
+        [name,phone, email, datetime],
+        (error, results) => {
+            if (error) {
+                resolve(false);
+                return;
+            }
+            resolve(true);
+        });
+    });
+}
+
 
 module.exports = router;
