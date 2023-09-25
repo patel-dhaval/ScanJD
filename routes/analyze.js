@@ -2,10 +2,6 @@ const express = require('express');
 const mysql = require('mysql2');
 const router = express.Router();
 const crypto = require("crypto");
-import OpenAI from "openai";
-const openai = new OpenAI({
-    apiKey: "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",
-});
 // OpenAI api key
 // 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
 
@@ -53,24 +49,11 @@ router.post('/', async (req, res) => {
         return;
     }
     // if not in db, get response from chatgpt
-    response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            "role": "system",
-            "content": "take the following job description and in a json response only, tell me the number of years of work experience required and list the top 5 technical skills only: "+jd
-          }
-        ],
-        temperature: 1,
-        max_tokens: 256,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0,
-    });
+    
     // store response in db
     // send response
     res.status(200);
-    res.json({ response: response});
+    res.json({ response: "waddup"});
     return;
 });
 
