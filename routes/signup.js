@@ -36,7 +36,7 @@ const connection = mysql.createConnection({
     host: 'localhost',    
     user: 'root',     
     password: 'MySQL@root123', 
-    database: 'optimal' 
+    database: 'optimal'
 });
 connection.connect((err) => {
     if (err) {
@@ -45,15 +45,12 @@ connection.connect((err) => {
     }
     console.log('SignUp route: Connected to the MySQL database');
 });
+
 let users = 1;
 // Route for signing up
 router.post('/', async (req, res) => {
     // circuitbreaker
     if(users>1000){
-        res.status(400);
-        console.log("User Waitlisted");
-        res.json({ response: "You are currently waitlisted. We are working on scaling up our systems." });
-        
         // To DO: Add the email to a waitlist table, need to create new table
         // Table schema: name, email, phone, datetime
 
@@ -65,7 +62,7 @@ router.post('/', async (req, res) => {
         email,
         phone,
         name,
-        currentTime: currentTime.toISOString() // Convert the time to ISO format (or another format you prefer)
+        currentTime: currentTime.toISOString().slice(0, 19).replace('T', ' ') // Convert the time to ISO format (or another format you prefer)
         };
 
         // check if phoneHash is not null
@@ -90,7 +87,8 @@ router.post('/', async (req, res) => {
         }
         // send response
         res.status(200);
-        res.json({ response: "Success"});
+        console.log("User Waitlisted");
+        res.json({ response: "You are currently waitlisted. We are working on scaling up our systems." });
         return;
     }
     // get phone number from the request
@@ -264,13 +262,14 @@ function userCount(){
     });
 }
 
-function addWaitlistedUser(name,phone, email, datetime) {
+function addWaitlistedUser(name,phone, email, currentTime) {
     return new Promise((resolve, reject) => {
         connection.query(
-        'INSERT INTO `WaitlistedUsers` (name,phone, email, datetime) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE dateTime=\''+datetime+'\', email=\''+email+'\', name=\''+name+'\'',
-        [name,phone, email, datetime],
+        'INSERT INTO `WaitlistUsers` (name,phone, email, dateTime) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE phone=\''+phone+'\', dateTime=\''+currentTime+'\', email=\''+email+'\', name=\''+name+'\'',
+        [name,phone, email, currentTime],
         (error, results) => {
             if (error) {
+                //console.error('Error inserting data:', error);
                 resolve(false);
                 return;
             }
