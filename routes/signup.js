@@ -33,17 +33,17 @@ const twilioClient = twilio(accountSid, authToken);
 const from = '+18667162394';
 // connecting to the mySQL database
 const connection = mysql.createConnection({
-    host: 'localhost',    
-    user: 'root',     
-    password: 'MySQL@root123', 
-    database: 'optimal' 
+    host: 'optima.ceiqumtvx3ak.us-east-1.rds.amazonaws.com',    
+    user: 'admin',     
+    password: 'admin1234', 
+    database: 'optimal_rds' 
 });
 connection.connect((err) => {
     if (err) {
         console.error('Error connecting to the database:', err);
         return;
     }
-    console.log('SignUp route: Connected to the MySQL database');
+    console.log('SignUp route: Connected to the AWS RDS MySQL database');
 });
 let users = 1;
 // Route for signing up
