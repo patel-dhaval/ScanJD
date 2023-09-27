@@ -29,17 +29,17 @@ const jwtSecretKey = `$2b$05$uzFGQTRhuymHkNDiB1xNDO10zjfSCKyiOqUU6s/pnJCCcB2XD53
 
 // connecting to the mySQL database
 const connection = mysql.createConnection({
-    host: 'localhost',    
-    user: 'root',     
-    password: 'MySQL@root123', 
-    database: 'optimal' 
+    host: 'optima.ceiqumtvx3ak.us-east-1.rds.amazonaws.com',    
+    user: 'admin',     
+    password: 'admin1234', 
+    database: 'optimal_rds' 
 });
 connection.connect((err) => {
     if (err) {
         console.error('Error connecting to the database:', err);
         return;
     }
-    console.log('Login route: Connected to the MySQL database');
+    console.log('Login route: Connected to the AWS RDS MySQL database');
 });
 
 // Route for logging in
@@ -56,18 +56,20 @@ router.post('/', async (req, res) => {
     // check if email is in the db or not
     const results = await userData(phone, 'users');
 
-    // if -> email is in the system then return apikey and credits as response
-    if (results.length == 1){
-        res.status(200);
-        res.json({ apikey: results[0].apikey, credits: results[0].credits});
-        return;
-    }
-    // else -> return error
-    else{
+    // if -> email is not in the system 
+    if (results.length != 1){
         res.status(400);
         res.json({ response: "user not found"});
         return;
     }
+    if(results[0].phone!=phone||results[0].email!=email){
+        res.status(400);
+        res.json({ response: "invalid credentials"});
+        return;
+    }
+    res.status(200);
+    res.json({ apikey: results[0].apikey, credits: results[0].credits});
+    return;
 });
 
 function userData(phone, db) {
