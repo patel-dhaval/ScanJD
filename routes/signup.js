@@ -33,17 +33,17 @@ const twilioClient = twilio(accountSid, authToken);
 const from = '+18667162394';
 // connecting to the mySQL database
 const connection = mysql.createConnection({
-    host: 'localhost',    
-    user: 'root',     
-    password: 'MySQL@root123', 
-    database: 'optimal' 
+    host: 'optima.ceiqumtvx3ak.us-east-1.rds.amazonaws.com',    
+    user: 'admin',     
+    password: 'admin1234', 
+    database: 'optimal_rds' 
 });
 connection.connect((err) => {
     if (err) {
         console.error('Error connecting to the database:', err);
         return;
     }
-    console.log('SignUp route: Connected to the MySQL database');
+    console.log('SignUp route: Connected to the AWS RDS MySQL database');
 });
 let users = 1;
 // Route for signing up
@@ -83,7 +83,7 @@ router.post('/', async (req, res) => {
     }
     // else -> generate otp, send otp to WA api, insert otp and number in 
     // TODO: Make OTP only digits
-    const otp = generateRandomKey(6);
+    const otp = generateOTP(6);
     // send otp to user 
     const message = "Hey there! \n Welcome to ScanJD. Here is your Signup OTP: "+otp
     twilioClient.messages
@@ -209,10 +209,20 @@ function generateRandomKey(len) {
     const keyBytes = new Uint8Array(len/2);
     crypto.getRandomValues(keyBytes);
     const keyHex = Array.from(keyBytes)
-        .map(byte => byte.toString(16).padStart(2, '0'))
+    .map(byte => byte.toString(16).padStart(2, '0'))
         .join('');
     return keyHex;
 }
+
+function generateOTP(len) {
+    let result = '';
+    for (let i = 0; i < len; i++) {
+        const randomDigit = Math.floor(Math.random() * 10); // Generate a random digit between 0 and 9
+        result += randomDigit.toString(); // Append the digit to the result
+    }
+    return result;
+}
+
 function userCount(){
     return new Promise((resolve, reject) => {
         connection.query(
@@ -229,3 +239,5 @@ function userCount(){
 }
 
 module.exports = router;
+
+// map(byte => Math.floor(byte / 16).toString())
