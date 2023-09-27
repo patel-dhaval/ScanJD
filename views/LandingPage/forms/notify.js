@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const email = emailInput.value;
 
-        fetch('https://scanjd.xyz/subscribe', {
+        fetch('/subscribe', {
             method: 'POST',
             body: JSON.stringify({ email }),
             headers: {
