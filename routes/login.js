@@ -56,18 +56,20 @@ router.post('/', async (req, res) => {
     // check if email is in the db or not
     const results = await userData(phone, 'users');
 
-    // if -> email is in the system then return apikey and credits as response
-    if (results.length == 1){
-        res.status(200);
-        res.json({ apikey: results[0].apikey, credits: results[0].credits});
-        return;
-    }
-    // else -> return error
-    else{
+    // if -> email is not in the system 
+    if (results.length != 1){
         res.status(400);
         res.json({ response: "user not found"});
         return;
     }
+    if(results[0].phone!=phone||results[0].email!=email){
+        res.status(400);
+        res.json({ response: "invalid credentials"});
+        return;
+    }
+    res.status(200);
+    res.json({ apikey: results[0].apikey, credits: results[0].credits});
+    return;
 });
 
 function userData(phone, db) {
