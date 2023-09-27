@@ -10,10 +10,11 @@ const analyzeRouter = require('./routes/analyze');
 app.use('/login', loginRouter);
 app.use('/signup', signupRouter);
 app.use('/analyze', analyzeRouter);
-app.use(express.static('assets'));
+app.use(express.static('views'));
+app.set('view engine', 'ejs');
 app.get('/', (req, res) => {
     // Send the HTML file using res.sendFile()
-    res.sendFile(__dirname + '/views/index.html');
+    res.render("LandingPage/landingpage");
   });
 
 app.listen(3001, () => {
