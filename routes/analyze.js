@@ -45,6 +45,8 @@ router.post('/', async (req, res) => {
     if(response.length==1){
         res.status(200);
         res.json({ response: response[0].response});
+        // update number of credits
+        await updateCredits(apikey);
         return;
     }
     // if not in db, get response from chatgpt
