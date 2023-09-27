@@ -1,30 +1,7 @@
 const express = require('express');
-const mysql = require('mysql2');
 const router = express.Router();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-
+const mysql = require('mysql2');
 const crypto = require("crypto");
-
-// DO NOT CHANGE THIS KEY
-const jwtSecretKey = `$2b$05$uzFGQTRhuymHkNDiB1xNDO10zjfSCKyiOqUU6s/pnJCCcB2XD538W`;
-// //////////////////////////////////////
-// DB schema
-/////////////////////////////////////////
-// analysis      //
-//////////////////////
-// jobId            //
-// jobDescription   //
-// response         //
-// lastUpdated      //
-//////////////////////
-// users
-// //////////////
-// phoneHash
-// apiKey
-// credits
-
-
 
 
 // connecting to the mySQL database

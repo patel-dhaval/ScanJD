@@ -1,36 +1,17 @@
 const express = require('express');
 const mysql = require('mysql2');
 const router = express.Router();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const textflow = require("textflow.js");
 const crypto = require("crypto");
 const twilio = require('twilio');
-textflow.useKey("tb956cfIG2FogX75HCZ4qvKN4KM8ZV4lHqOtY7R4SuMgnAb6NjW2RYZThigbOHfL");
-// DO NOT CHANGE THIS KEY
-const jwtSecretKey = `$2b$05$uzFGQTRhuymHkNDiB1xNDO10zjfSCKyiOqUU6s/pnJCCcB2XD538W`;
-// //////////////////////////////////////
-// DB schema
-/////////////////////////////////////////
-// analysis      //
-//////////////////////
-// jobId            //
-// jobDescription   //
-// response         //
-// lastUpdated      //
-//////////////////////
-// users
-// //////////////
-// phoneHash
-// apiKey
-// credits
-// 
 
+textflow.useKey("tb956cfIG2FogX75HCZ4qvKN4KM8ZV4lHqOtY7R4SuMgnAb6NjW2RYZThigbOHfL");
 
 const accountSid = 'AC3f2bb18de3d3fda5326abd0e4b3566ce';
 const authToken = '0559ba919e0e0eeb6c21936460ec1a89';
 const twilioClient = twilio(accountSid, authToken);
 const from = '+18667162394';
+
 // connecting to the mySQL database
 const connection = mysql.createConnection({
     host: 'optima.ceiqumtvx3ak.us-east-1.rds.amazonaws.com',    
@@ -50,36 +31,25 @@ let users = 1;
 // Route for signing up
 router.post('/', async (req, res) => {
     // circuitbreaker
-    if(users>1000){
+    if(users>=1){
         // To DO: Add the email to a waitlist table, need to create new table
         // Table schema: name, email, phone, datetime
 
-        const { email, phone, name } = req.body;
+        const {email} = req.body;
         const currentTime = new Date(); // Create a Date object to capture the current time
 
         // Create a new object with the captured values and the current time
         const waitlistUser = {
         email,
-        phone,
-        name,
         currentTime: currentTime.toISOString().slice(0, 19).replace('T', ' ') // Convert the time to ISO format (or another format you prefer)
         };
-
         // check if phoneHash is not null
-        if(waitlistUser.phone==null || waitlistUser.email ==null || waitlistUser.name == null){
+        if(waitlistUser.email ==null){
             res.status(400);
             res.json({ response: "Incomplete Details" });
             return;
         }
-        // check if phone number is valid or not:
-        const phoneNumberPattern = /^\+1\d{10}$/;
-        if(phoneNumberPattern.test(waitlistUser.phone)==false){
-            res.status(400);
-            res.json({ response: "Not a valid phone number" });
-            return;
-        }
-
-        const addDB = await addWaitlistedUser(waitlistUser.name,waitlistUser.phone, waitlistUser.email, waitlistUser.currentTime);
+        const addDB = await addWaitlistedUser(waitlistUser.email, waitlistUser.currentTime);
         if(addDB==false){
             res.status(400);
             res.json({ response: "Internal error" });
@@ -120,12 +90,20 @@ router.post('/', async (req, res) => {
     const otp = generateOTP(6);
     // send otp to user 
     const message = "Hey there! \n Welcome to ScanJD. Here is your Signup OTP: "+otp
-    twilioClient.messages
-    .create({
-      body: message,
-      from: from,
-      to: phone,
-    })
+    try {
+        twilioClient.messages
+        .create({
+        body: message,
+        from: from,
+        to: phone,
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400);
+        res.json({ response: "internal error" });
+        return;
+    }
+    
     // insert otp in unverifiedUsers db
     const addDB = await addUnverifiedUser(phone, email, otp, name);
     if(addDB==false){
@@ -272,14 +250,14 @@ function userCount(){
     });
 }
 
-function addWaitlistedUser(name,phone, email, currentTime) {
+function addWaitlistedUser( email, currentTime) {
     return new Promise((resolve, reject) => {
         connection.query(
-        'INSERT INTO `WaitlistUsers` (name,phone, email, dateTime) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE phone=\''+phone+'\', dateTime=\''+currentTime+'\', email=\''+email+'\', name=\''+name+'\'',
-        [name,phone, email, currentTime],
+        'INSERT INTO `waitlist` (email, dateTime, emailSent) VALUES ( ?, ?, 0) ON DUPLICATE KEY UPDATE dateTime=\''+currentTime+'\', email=\''+email+'\'',
+        [email, currentTime],
         (error, results) => {
             if (error) {
-                //console.error('Error inserting data:', error);
+                console.error('Error inserting data:', error);
                 resolve(false);
                 return;
             }

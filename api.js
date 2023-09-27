@@ -12,6 +12,11 @@ app.use('/signup', signupRouter);
 app.use('/analyze', analyzeRouter);
 app.use(express.static('views'));
 app.set('view engine', 'ejs');
+
+app.use((req, res, next) => {
+  console.log(req.ip);
+  next(); // Pass control to the next middleware or route handler
+});
 app.get('/', (req, res) => {
     // Send the HTML file using res.sendFile()
     res.render("LandingPage/landingpage");
