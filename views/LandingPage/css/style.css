@@ -178,6 +178,13 @@ h6 {
   text-align: left;
 }
 
+#header .subscribe .g-recaptcha {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+
 #header .subscribe .subscribe-form input[type=email] {
   border: 0;
   padding: 4px 8px;
