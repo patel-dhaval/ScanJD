@@ -31,7 +31,7 @@ let users = 1;
 // Route for signing up
 router.post('/', async (req, res) => {
     // circuitbreaker
-    if(users>=1){
+    if(users>=200){
         // To DO: Add the email to a waitlist table, need to create new table
         // Table schema: name, email, phone, datetime
 
