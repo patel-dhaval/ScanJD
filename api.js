@@ -22,7 +22,7 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
     // Send the HTML file using res.sendFile()
     res.render("LandingPage/landingpage");
-  });
+});
 
 app.listen(3001, () => {
     console.log('Server started on port 3010');
