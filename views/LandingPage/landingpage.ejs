@@ -22,8 +22,7 @@
   <!-- Template Main CSS File -->
   <link href="LandingPage/css/style.css" rel="stylesheet">
 
-  <!-- reCAPTCHA -->
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 
   <!-- =======================================================
   * Template Name: Maundy
@@ -35,7 +34,7 @@
 </head>
 
 <body>
-  <script src="LandingPage/forms/notify.js"></script>
+
 
   <!-- ======= Header ======= -->
   <header id="header" class="d-flex align-items-center">
@@ -65,11 +64,14 @@
 
       <div class="subscribe">
         <h4>Subscribe now to join our waitlist and get early access!</h4>
-        <form action="/subscribe" method="post" role="form" class="php-email-form" data-recaptcha-site-key="6LeDYlsoAAAAAEryEWOR8NWyJ-rBppe_pl4-hpLl">
+        <form action="/subscribe" method="post" role="form" class="php-email-form" data-recaptcha-site-key="6LcV1lsoAAAAAEh35C59wHS90LI3ODymYMFqsMh5">
           <div class="subscribe-form">
-              <input type="email" name="email" required>
+              <input type="email" name="email" required> 
               <input type="submit" value="Subscribe">
           </div>
+          <br><div class="g-recaptcha" data-sitekey="6LcV1lsoAAAAAEh35C59wHS90LI3ODymYMFqsMh5"></div>
+          <!-- Google reCAPTCHA widget -->
+          <div class="container d-flex flex-column align-items-center"></div></div>
       </form>
     </div>
   </header>
@@ -129,6 +131,10 @@
   <!-- Vendor JS Files -->
   <script src="LandingPage/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="LandingPage/assets/vendor/php-email-form/validate.js"></script>
+
+    <!-- reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="LandingPage/forms/notify.js"></script>
 
   <!-- Template Main JS File -->
   <script src="LandingPage/js/main.js"></script>
