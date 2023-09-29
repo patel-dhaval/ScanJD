@@ -23,7 +23,9 @@ connection.connect((err) => {
 
 router.post('/', async (req, res) => {
     const {apikey, jd, jdID} = req.body;
+    console.log(req.body);
     if(apikey==null||jd==null||jdID==null){
+        console.log(1);
         res.status(400);
         res.json({ response: "data incomplete" });
         return;
@@ -31,11 +33,13 @@ router.post('/', async (req, res) => {
     // check apikey is valid or not
     const results = await userData(apikey, 'users');
     if (results.length != 1){
+        console.log(2);
         res.status(400);
         res.json({ response: "invalid API key"});
         return;
     }
     if(results[0].credits<=0){
+        console.log(3);
         res.status(400);
         res.json({ response: "not enough credits"});
         return;
@@ -53,6 +57,7 @@ router.post('/', async (req, res) => {
     response = await getGPT(jd);
     // validate the response
     if(response.data.error!=null){
+        console.log(4);
         res.status(400);
         res.json({ response: "internal error: GPT"});
         return;
@@ -146,7 +151,7 @@ function insertJD(jdID, jd, response) {
     return new Promise((resolve, reject) => {
         connection.query(
         'INSERT INTO `analysis` (jdID, jd, response) VALUES (?, ?, ?)',
-        [jdID, "sample jd", JSON.stringify(response)],
+        [jdID, jd, JSON.stringify(response)],
         (error, results) => {
             if (error) {
                 console.log(error);
