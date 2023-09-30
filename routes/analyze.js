@@ -23,7 +23,6 @@ connection.connect((err) => {
 
 router.post('/', async (req, res) => {
     const {apikey, jd, jdID} = req.body;
-    console.log(req.body);
     if(apikey==null||jd==null||jdID==null){
         console.log(1);
         res.status(400);
@@ -48,9 +47,12 @@ router.post('/', async (req, res) => {
     let response = await getResponse(jdID);
     if(response.length==1){
         res.status(200);
-        res.json({ response: response[0].response});
+        response = response[0].response
+        response = await JSON.parse(response);
+        res.json(response);
         // update number of credits
         await updateCredits(apikey);
+        console.log("DB:" + JSON.stringify(response));
         return;
     }
     // if not in db, get response from chatgpt
@@ -63,14 +65,16 @@ router.post('/', async (req, res) => {
         return;
     }
     response = response.data.choices[0].message.content
+    response = await JSON.parse(response);
     
     // store response in db
     const dp = await insertJD(jdID, jd, response);
     // send response
     res.status(200);
-    res.json({ response: response});
+    res.json(response);
     // update number of credits
     await updateCredits(apikey);
+    console.log("GPT:" + JSON.stringify(response));
     return;
 });
 
@@ -87,7 +91,7 @@ async function getGPT(jd){
     For sponsorship, it means whether the company is willing to sponsor for work visa now or in future. If they strictly require the candidates to be having US citizenship or green card or legal asylum etc, that means sponsorship is not available.
     In experience, extract the number which best represents required work experience. If they are open to hire a candidate with lower work experience than their ideal candidate, mention work ex requirement of candidate with lower experience. This should be a number only.
     top skills: In this you are supposed to give out skills in different programming languages, tools and concepts. Be specific.
-    The job description is as follows: `;
+    Your response should not have unneccessary escape characters. Response has to be json string. The job description is as follows: `;
     const prompt = trainingPrompt + " "+jd;
     //gpt-4, gpt-4-0314, gpt-4-32k, gpt-4-32k-0314, gpt-3.5-turbo, gpt-3.5-turbo-0301
     const data = {
