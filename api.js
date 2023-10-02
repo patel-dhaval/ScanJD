@@ -17,10 +17,7 @@ app.use('/analyze', analyzeRouter);
 app.use('/subscribe', subscribeRouter);
 app.use('/validate', validateRouter);
 
-app.use(cors({
-  origin: ['https://linkedin.com', 'https://scanjd.xyz'],
-  methods: 'GET,POST',
-}));
+app.use(cors);
 
 app.use(express.static('views'));
 app.set('view engine', 'ejs');
