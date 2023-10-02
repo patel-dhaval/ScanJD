@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
     // check if email is not null
     if(apikey==null){
         res.status(400);
-        res.json({ response: "apikey null" });
+        res.json({ response: "No api key found" });
     }
 
     // check if email is in the db or not
@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
     // if -> email is not in the system 
     if (results.length != 1){
         res.status(400);
-        res.json({ response: "apikey not found"});
+        res.json({  response: "Invalid api key"});
         return;
     }
     res.status(200);
