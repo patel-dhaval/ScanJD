@@ -10,6 +10,11 @@ Scan JD is a powerful Chrome extension designed to elevate your job search exper
 
 - **ChatGPT Integration:** Employs ChatGPT's API in the backend for advanced job description analysis, utilizing sophisticated Prompt engineering techniques.
 
+## Mockups
+
+![Mockup 1](MockUps/Poster.png)
+![Mockup 2](mockups/Mockups.png)
+
 ## How it Works:
 
 1. **Seamless Integration:** The Chrome extension seamlessly integrates with LinkedIn, providing a hassle-free experience.
