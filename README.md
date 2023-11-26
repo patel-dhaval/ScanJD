@@ -13,7 +13,7 @@ Scan JD is a powerful Chrome extension designed to elevate your job search exper
 ## Mockups
 
 ![Mockup 1](MockUps/Poster.png)
-![Mockup 2](mockups/Mockups.png)
+![Mockup 2](MockUps/Mockups.png)
 
 ## How it Works:
 
