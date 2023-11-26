@@ -44,7 +44,7 @@ const transporter = nodemailer.createTransport({
     secure: false, // true for 465, false for other ports
     auth: {
 		user: 'scanjdapp@gmail.com', // your SMTP email address
-		pass: 'GrKLZRQYSyFcm6h9'
+		pass: ''
     }
 });
 
