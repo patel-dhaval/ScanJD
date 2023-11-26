@@ -17,6 +17,8 @@ Scan JD is a powerful Chrome extension designed to elevate your job search exper
 
 [![Video](MockUps/Credits.png)](https://clipchamp.com/watch/U7iRy48gvBT)
 
+Video: https://clipchamp.com/watch/U7iRy48gvBT
+
 ## How it Works:
 
 1. **Seamless Integration:** The Chrome extension seamlessly integrates with LinkedIn, providing a hassle-free experience.
