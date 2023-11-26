@@ -27,7 +27,7 @@ Scan JD is a powerful Chrome extension designed to elevate your job search exper
 
 1. Clone the repository.
     ```bash
-    git clone https://github.com/patel-dhaval/scanjd.git
+    git clone https://github.com/patel-dhaval/ScanJD.git
     ```
 
 2. Install the Chrome extension.
